@@ -43,10 +43,10 @@ include('consultasql.php');
     <!-- tarjeta margen-->
     <div class="container-tarjetas">
       <div class="row">
-        <div class="col metric-margen">
-          <div class="card-body">
-            <h5 class="card-title text-muted">Margen</h5>
-            <h2 class="fw-bold" id="totalVentas">$<?php echo number_format($margentotal, 0, ',', '.'); ?></h2>
+        <div class="col metric-neto">
+          <div class="card-body"> 
+            <h5 class="card-title text-muted">Total venta neto</h5>
+            <h2 class="fw-bold" id="totalOrdenServicio">$<?php echo number_format($totalordenservicio, 0, ',', '.'); ?></h2>
           </div>
         </div>
 
@@ -59,14 +59,15 @@ include('consultasql.php');
         </div>
 
         <!-- tarjeta venta neto-->
-        <div class="col metric-neto">
-          <div class="card-body"> 
-            <h5 class="card-title text-muted">Total venta neto</h5>
-            <h2 class="fw-bold" id="totalOrdenServicio">$<?php echo number_format($totalordenservicio, 0, ',', '.'); ?></h2>
+        <div class="col metric-margen">
+          <div class="card-body">
+            <h5 class="card-title text-muted">Margen</h5>
+            <h2 class="fw-bold" id="totalVentas">$<?php echo number_format($margentotal, 0, ',', '.'); ?></h2>
           </div>
         </div>
       </div>
     </div>
+
 
     <!--primera tarjeta graficos-->
 
@@ -111,15 +112,17 @@ include('consultasql.php');
         const inicio = document.getElementById('start').value;
         const fin = document.getElementById('end').value;
         const empresa = document.getElementById('empresaFilter').value;
+  
+    if (fin < inicio) {
+    alert('La fecha final debe ser igual o superior a la fecha inicial');
+    return;
+  }
 
   if (!inicio || !fin) {
     alert('Por favor selecciona ambas fechas');
     return;
   }
-  if (inicio > fin) {
-    alert('La fecha inicial debe ser anterior a la fecha final');
-    return;
-  }
+
 
   
   fetch(`obtener_dashboard.php?inicio=${inicio}&fin=${fin}&empresa=${encodeURIComponent(empresa)}`)
@@ -128,11 +131,11 @@ include('consultasql.php');
       if (data.error) {
         alert('Error: ' + data.error);
         return;
-      }
+      } 
 
       if (empresa !== "") {
-            document.getElementById('totalVentas').textContent = "0"; 
-            document.getElementById('totalCompras').textContent = "0";
+            document.getElementById('totalVentas').textContent = "---"; 
+            document.getElementById('totalCompras').textContent = "---";
             document.getElementById('totalOrdenServicio').textContent = '$' + data.totalordenservicio_formateado;
 
         } else {
